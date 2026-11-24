@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Тайминг Битва Городов Суперфинал</title>
+  <meta name="description" content="Актуальное расписание суперфинала «Битвы Городов».">
+  <meta property="og:site_name" content="Тайминг Битва Городов Суперфинал">
+  <meta property="og:title" content="Тайминг Битва Городов Суперфинал">
+  <meta property="og:description" content="Актуальное расписание суперфинала «Битвы Городов».">
+  <style>
+    :root {
+      /* Высота для 117 строк. Если внизу останется пустое место или таблица обрежется — скорректируйте это число */
+      --table-height: 3050px;
+      --table-width: 650px;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { color-scheme: light; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: #233139;
+      font: 1rem/1.5 'Trebuchet MS', sans-serif;
+      background-color: #101e50;
+      isolation: isolate;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(to bottom, rgba(7, 14, 42, .18), transparent 180px), url('bgbg_.png');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+    }
+    .shell { width: min(100% - 32px, 1440px); margin: 12px auto; }
+    header {
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px clamp(12px, 2.6vw, 32px);
+      color: #f4fffc;
+      background: rgba(12, 24, 61, .78);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(226, 255, 249, .2);
+      border-radius: 16px;
+    }
+    h1 { margin: 0; font-size: clamp(1.05rem, 3.2vw, 2rem); line-height: 1.15; }
+    .eyebrow { display: block; margin-bottom: 5px; color: #a9dbcd; font: 700 .69rem/1.2 monospace; letter-spacing: .17em; }
+    .actions { display: flex; align-items: center; gap: 8px; flex: none; }
+    .control {
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      min-height: 42px; padding: 0 12px; color: inherit; font: inherit;
+      font-size: .84rem; text-decoration: none; cursor: pointer;
+      background: rgba(245, 255, 252, .08); border: 1px solid rgba(225, 255, 248, .23); border-radius: 9px;
+    }
+    .control:hover:not(:disabled) { background: rgba(245, 255, 252, .18); }
+    .control:disabled { opacity: .55; cursor: default; }
+    :focus-visible { outline: 2px solid #57a58f; outline-offset: 3px; }
+    .icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .edit { width: 42px; padding: 0; }
+    .sheet {
+      position: relative; margin: 12px auto 0; overflow: hidden;
+      width: 100%; max-width: var(--table-width); height: var(--table-height);
+      background: #fff; border-radius: 16px; box-shadow: 0 14px 36px rgba(9, 25, 32, .22);
+    }
+    .sheet iframe { display: block; width: 100%; height: var(--table-height); border: 0; overflow: hidden; }
+    .state { position: absolute; inset: 0; display: grid; place-content: start center; justify-items: center; gap: 12px; padding: 64px 20px 20px; text-align: center; background: #f8fbfa; }
+    .state p { max-width: 34ch; margin: 0; }
+    .state small { display: block; margin-top: 6px; color: #506568; }
+    .state a { color: #185c50; }
+    .badge { display: grid; place-items: center; width: 52px; height: 52px; border: 1px solid #c6ded8; border-radius: 14px; color: #27685b; background: #e6f2ee; }
+    .badge .icon { width: 24px; height: 24px; }
+    .spinner { width: 28px; height: 28px; border: 3px solid #d6e8e3; border-top-color: #27685b; border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+    @media (max-width: 682px) {
+      .sheet { overflow-x: hidden; }
+      .sheet iframe {
+        width: var(--table-width);
+        min-width: var(--table-width);
+        transform-origin: top left;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .shell { width: min(100% - 16px, 1440px); margin: 8px auto; }
+      header { flex-wrap: wrap; }
+      .actions { margin-left: auto; }
+      .sheet { margin-top: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div>
+        <span class="eyebrow">РАСПИСАНИЕ</span>
+        <h1>Тайминг Битва Городов Суперфинал</h1>
+      </div>
+      <div class="actions">
+        <button class="control" id="refresh" type="button" disabled>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10a8 8 0 1 0-1.5 7M20 4v6h-6"/></svg>
+          Обновить
+        </button>
+        <!-- Необязательно: вставьте прямую ссылку /edit в атрибут href. -->
+        <a class="control edit" id="edit" href="" target="_blank" rel="noopener noreferrer" aria-label="Открыть исходную таблицу в новой вкладке" title="Открыть исходную таблицу" hidden>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16-1 5 5-1L20 8l-4-4zM14 6l4 4"/></svg>
+        </a>
+      </div>
+    </header>
+
+    <main class="sheet" aria-label="Таблица расписания" tabindex="0">
+      <template id="embed">
+        <iframe scrolling="no" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSGinZey6DQ_jWfhTaiXBsxNeU4JNSKt8zCebBkYPfkFv_5rER_KakkB8KNzKVZVw/pubhtml?gid=1746027829&amp;single=true&amp;range=A1%3AE117&amp;widget=false&amp;headers=false&amp;chrome=false"></iframe>
+      </template>
+      <div class="state" id="empty">
+        <span class="badge" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M10 9v11M3 14h18"/></svg></span>
+        <p><strong>Расписание пока не подключено</strong><small id="hint">Здесь появится опубликованная таблица.</small></p>
+      </div>
+      <div class="state" id="loading" hidden>
+        <span class="spinner" aria-hidden="true"></span>
+        <p id="status" role="status">Загружаем расписание…</p>
+        <a id="open-sheet" target="_blank" rel="noopener noreferrer" hidden>Открыть таблицу в новой вкладке</a>
+      </div>
+      <noscript>Для отображения расписания включите JavaScript.</noscript>
+    </main>
+  </div>
+
+  <script>
+    const edit = document.querySelector('#edit');
+    edit.hidden = !edit.getAttribute('href').trim();
+
+    const pasted = document.querySelector('#embed').content.querySelector('iframe[src]');
+    if (pasted) {
+      const empty = document.querySelector('#empty');
+      const loading = document.querySelector('#loading');
+      const refresh = document.querySelector('#refresh');
+      const status = document.querySelector('#status');
+      const openSheet = document.querySelector('#open-sheet');
+      const spinner = loading.querySelector('.spinner');
+      let frame;
+      let timeout;
+
+      try {
+        const source = new URL(pasted.getAttribute('src'));
+        if (source.origin !== 'https://docs.google.com' ||
+            !/^\/spreadsheets\/d\/(?:e\/)?[^/]+\/pubhtml\/?$/.test(source.pathname)) {
+          throw new Error('Expected a published Google Sheets embed');
+        }
+        for (const name of ['chrome', 'widget', 'headers']) source.searchParams.set(name, 'false');
+        openSheet.href = source.href;
+
+        function loadSheet(reload = false) {
+          clearTimeout(timeout);
+          const next = document.createElement('iframe');
+          const url = new URL(source);
+          if (reload) url.searchParams.set('_refresh', String(Date.now()));
+          status.textContent = 'Загружаем расписание…';
+          loading.hidden = spinner.hidden = false;
+          openSheet.hidden = true;
+          next.title = 'Расписание суперфинала — Google Таблицы';
+          next.setAttribute('scrolling', 'no');
+          next.addEventListener('load', () => {
+            if (frame !== next) return;
+            clearTimeout(timeout);
+            loading.hidden = true;
+          }, { once: true });
+          next.src = url.href;
+          const previous = frame;
+          frame = next;
+          (previous || loading).before(next);
+          previous?.remove();
+          fitSheet();
+          timeout = setTimeout(() => {
+            status.textContent = 'Таблица загружается дольше обычного.';
+            spinner.hidden = true;
+            openSheet.hidden = false;
+          }, 15000);
+        }
+
+        function fitSheet() {
+          const sheet = document.querySelector('.sheet');
+          if (!sheet) return;
+          const styles = getComputedStyle(document.documentElement);
+          const baseWidth = parseFloat(styles.getPropertyValue('--table-width')) || 650;
+          const baseHeight = parseFloat(styles.getPropertyValue('--table-height')) || 3050;
+          const currentWidth = sheet.clientWidth;
+
+          if (currentWidth > 0 && currentWidth < baseWidth) {
+            const scale = currentWidth / baseWidth;
+            sheet.style.height = Math.ceil(baseHeight * scale) + 'px';
+            if (frame) {
+              frame.style.width = baseWidth + 'px';
+              frame.style.height = baseHeight + 'px';
+              frame.style.transform = `scale(${scale})`;
+            }
+          } else {
+            sheet.style.height = baseHeight + 'px';
+            if (frame) {
+              frame.style.width = '100%';
+              frame.style.height = baseHeight + 'px';
+              frame.style.transform = 'none';
+            }
+          }
+        }
+
+        window.addEventListener('resize', fitSheet);
+        empty.hidden = true;
+        refresh.disabled = false;
+        refresh.addEventListener('click', () => loadSheet(true));
+        loadSheet();
+      } catch {
+        document.querySelector('#hint').textContent = 'Нужен iframe из раздела «Опубликовать в интернете → Встроить».';
+      }
+    }
+  </script>
+</body>
+</html>
